@@ -1,0 +1,1 @@
+alias EctoTraining.{Users.User, Repo}
