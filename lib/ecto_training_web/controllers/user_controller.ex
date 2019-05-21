@@ -4,6 +4,7 @@ defmodule EctoTrainingWeb.UserController do
   """
 
   use EctoTrainingWeb, :controller
+  import Ecto.Changeset
   alias EctoTraining.{Users, Users.User, Repo}
 
   def index(conn, _params) do
@@ -25,6 +26,8 @@ defmodule EctoTrainingWeb.UserController do
     sanitized_params = params |> Enum.reduce(%{}, fn {k, v}, acc -> Map.put(acc, String.to_atom(k), v) end)
     cs = %User{} |> User.changeset(sanitized_params)
     if cs.valid? do
+      user = apply_changes(cs)
+      Repo.insert(cs)
       send_resp(conn, 201, "User created")
     else
       send_resp(conn, 400, "Cannot create user, reason: #{inspect cs.errors}")
